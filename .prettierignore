@@ -1,0 +1,7 @@
+.next/
+public/
+.vscode/
+coverage/
+
+.yarn/
+.yarnrc.yml
