@@ -1,6 +1,7 @@
+import type { FormEvent } from 'react';
+
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import type {FormEvent} from 'react';
 
 interface ModalProps {
   eventId: string | null | undefined;
@@ -17,9 +18,9 @@ interface EventData {
 }
 
 interface JoinEventResponse {
-    event_id: string;
-    email: string;
-    name: string;
+  event_id: string;
+  email: string;
+  name: string;
 }
 
 const JoinEventModal: React.FC<ModalProps> = ({
@@ -77,7 +78,7 @@ const JoinEventModal: React.FC<ModalProps> = ({
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
     const payload = { ...formValues, event_id: eventId };
-    
+
     try {
       await axios.post<JoinEventResponse>(
         `${process.env.NEXT_BACKEND_URL}/api/events/join`,

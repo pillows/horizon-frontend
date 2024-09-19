@@ -31,14 +31,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onSubmit }) => {
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       setIsModalOpen(false);
-
     }
   };
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       setIsModalOpen(false);
-
     }
   };
 

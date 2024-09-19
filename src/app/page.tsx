@@ -59,7 +59,6 @@ export default function Home() {
     }
   };
 
-
   const handleFormSubmit = async (data: EventData) => {
     // setIsModalOpen(false); // Close the modal after submission
     // Here you can also send the data to an API or perform any other action
