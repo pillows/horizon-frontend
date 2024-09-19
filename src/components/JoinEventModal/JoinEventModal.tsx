@@ -1,12 +1,12 @@
 import axios from 'axios';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import type {FormEvent} from 'react';
 
 interface ModalProps {
   eventId: string | null | undefined;
   isOpen: boolean;
-  disabled: boolean;
   onClose: () => void;
-  onJoinEvent: (newAvailableSpots: number) => void;
+  onJoinEvent: () => void;
 }
 
 interface EventData {
@@ -16,9 +16,14 @@ interface EventData {
   date: string;
 }
 
+interface JoinEventResponse {
+    event_id: string;
+    email: string;
+    name: string;
+}
+
 const JoinEventModal: React.FC<ModalProps> = ({
   eventId,
-  disabled,
   isOpen,
   onClose,
   onJoinEvent,
@@ -64,28 +69,32 @@ const JoinEventModal: React.FC<ModalProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapePress);
     };
-  }, [isModalOpen]);
+  }, [isModalOpen, handleClickOutside, handleEscapePress]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
-    const payload = { ...formValues, event_id: eventId }; // Add eventId to the payload
-    const response = await axios.post(
-      'http://localhost:4000/api/events/join',
-      payload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
+    const payload = { ...formValues, event_id: eventId };
+    
+    try {
+      await axios.post<JoinEventResponse>(
+        `${process.env.NEXT_BACKEND_URL}/api/events/join`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
+      );
 
-    const newAvailableSpots = response.data.availableSpots; // Assuming the response contains the updated available spots
-    console.log('New available spots:', response.data);
-    onJoinEvent(parseInt(newAvailableSpots) - 1);
-    toggleModal(); // Close the modal after submission
+      onJoinEvent();
+      toggleModal(); // Close the modal after submission
+    } catch (error) {
+      console.error('Error joining event:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   return (

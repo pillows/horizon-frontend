@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
   onSubmit: (eventData: EventData) => void;
 }
 
@@ -15,7 +14,7 @@ interface EventData {
   startDate: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -26,21 +25,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
-      onClose();
     }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       setIsModalOpen(false);
-      onClose();
+
     }
   };
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       setIsModalOpen(false);
-      onClose();
+
     }
   };
 

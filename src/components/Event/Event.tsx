@@ -60,7 +60,6 @@ const Event: React.FC<EventProps> = ({
       </button>
       <JoinEventModal
         eventId={eventId}
-        disabled={availableSpots === 0}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onJoinEvent={handleJoinEvent}

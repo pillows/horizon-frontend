@@ -24,14 +24,8 @@ interface EventData {
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [eventData, setEventData] = useState<EventData>({
-    name: '',
-    description: '',
-    availableSpots: 1,
-    startDate: '',
-  });
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -65,10 +59,9 @@ export default function Home() {
     }
   };
 
-  const onClose = () => setIsModalOpen(false);
 
   const handleFormSubmit = async (data: EventData) => {
-    setIsModalOpen(false); // Close the modal after submission
+    // setIsModalOpen(false); // Close the modal after submission
     // Here you can also send the data to an API or perform any other action
     const eventName = data.name || '';
     const eventDescription = data.description || '';
@@ -96,13 +89,13 @@ export default function Home() {
             'justify-center',
           )}
         >
-          <Modal isOpen={false} onClose={onClose} onSubmit={handleFormSubmit} />
+          <Modal isOpen={false} onSubmit={handleFormSubmit} />
           <div>
             {loading ? (
               <h2 className="mt-4 text-xl font-semibold">Events</h2>
             ) : (
               <div className="mt-5 block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow">
-                'Loading...'
+                Loading...
               </div>
             )}
 
