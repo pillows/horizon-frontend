@@ -31,13 +31,14 @@ export default function Home() {
     startDate: '',
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const eventsResp = await axios.get<Event[]>('/api/events');
         const events: Event[] = eventsResp.data;
         setEvents(events);
+        setLoading(true);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -98,9 +99,10 @@ export default function Home() {
         >
           <Modal isOpen={false} onClose={onClose} onSubmit={handleFormSubmit} />
           <div>
-            <h2 className="text-xl font-semibold mt-4">Events</h2>
+            {loading ? <h2 className="text-xl font-semibold mt-4">Events</h2> : <div className=" mt-5 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow">'Loading...'</div>}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+              
               {events.map((event) => (
                   <Event
                     key={event.id}
