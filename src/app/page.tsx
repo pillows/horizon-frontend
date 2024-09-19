@@ -29,46 +29,49 @@ export default function Home() {
     description: '',
     availableSpots: 1,
     startDate: '',
-});
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const eventsResp = await axios.get('/api/events');
-        const events = eventsResp.data;
+        const eventsResp = await axios.get<Event[]>('/api/events');
+        const events: Event[] = eventsResp.data;
         setEvents(events);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     };
-     fetchEvents();
+
+    void fetchEvents(); // Ensure the promise is handled correctly
   }, []); // Empty dependency array ensures this runs only once
 
 
   const addEvent = async (newEvent: Omit<Event, 'id'>) => {
-    const addEventResponse = await axios.post('/api/events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newEvent),
-    })
-    const createdEvent = addEventResponse.data
-    setEvents(prevEvents => [...prevEvents, createdEvent])
-  }
+    try {
+      const addEventResponse = await axios.post<Event>('/api/events', newEvent, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const addedEvent: Event = addEventResponse.data;
+      setEvents((prevEvents) => [...prevEvents, addedEvent]);
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
+  };
 
   const onClose = () => setIsModalOpen(false);
   
 
-  const handleFormSubmit = (data: EventData) => {
+  const handleFormSubmit = async (data: EventData) => {
     setIsModalOpen(false);  // Close the modal after submission
     // Here you can also send the data to an API or perform any other action
     const eventName = data.name || '';
     const eventDescription = data.description || '';
     const availableSpots = data.availableSpots || 0;
     const date = data.startDate || '';
-    addEvent({
+    await addEvent({
       name: eventName,
       start_date: date,
       available_spots: availableSpots,
@@ -76,12 +79,6 @@ export default function Home() {
     });
   };
 
-  const handleEventDataChange = (data: Partial<EventData>) => {
-    setEventData(prevData => ({
-      ...prevData,
-      ...data
-    }));
-  };
 
   return (
     <div className="py-20">
@@ -99,7 +96,7 @@ export default function Home() {
             'justify-center',
           )}
         >
-          <Modal isOpen={false} onChange={handleEventDataChange} onClose={onClose} onSubmit={handleFormSubmit} />
+          <Modal isOpen={false} onClose={onClose} onSubmit={handleFormSubmit} />
           <div>
             <h2 className="text-xl font-semibold mt-4">Events</h2>
 
@@ -107,7 +104,7 @@ export default function Home() {
               {events.map((event) => (
                   <Event
                     key={event.id}
-                    eventId={event.id?.toString() || ''}
+                    eventId={event.id?.toString() ?? ''}
                     description={event.description}
                     startDate={event.start_date}
                     name={event.name}

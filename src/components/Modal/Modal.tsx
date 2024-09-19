@@ -1,32 +1,25 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (eventData: EventData) => void;
-  onChange: (eventData: EventData) => void;
 }
 
 interface EventData {
   name: string;
   description: string;
   availableSpots: number;
-  date: string;
+  startDate: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
-  onChange,
+  onSubmit
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
-  const [eventData, setEventData] = useState<EventData>({
-    name: '',
-    description: '',
-    availableSpots: 1,
-    date: '',
-  });
 
   useEffect(() => {
     setIsModalOpen(isOpen);
@@ -37,14 +30,6 @@ const Modal: React.FC<ModalProps> = ({
     if (isModalOpen) {
       onClose();
     }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEventData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -160,7 +145,7 @@ const Modal: React.FC<ModalProps> = ({
                           </label>
                           <input
                             type="date"
-                            name="date"
+                            name="startDate"
                             id="event-date"
                             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                             placeholder="Enter event name"
