@@ -21,8 +21,6 @@ const JoinEventModal: React.FC<ModalProps> = ({
   eventId,
   disabled,
   isOpen,
-  onClose,
-  onSubmit,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
 
@@ -33,7 +31,7 @@ const JoinEventModal: React.FC<ModalProps> = ({
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
-      onClose();
+    //   onClose();
     }
   };
 
