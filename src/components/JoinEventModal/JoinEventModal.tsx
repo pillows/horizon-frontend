@@ -1,8 +1,8 @@
-import React, { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 interface ModalProps {
-    eventId: string | null | undefined;
+  eventId: string | null | undefined;
   isOpen: boolean;
   disabled: boolean;
   onClose: () => void;
@@ -18,8 +18,8 @@ interface EventData {
 }
 
 const JoinEventModal: React.FC<ModalProps> = ({
-    eventId,
-    disabled,
+  eventId,
+  disabled,
   isOpen,
   onClose,
   onSubmit,
@@ -39,19 +39,23 @@ const JoinEventModal: React.FC<ModalProps> = ({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
     onSubmit(formValues);
     console.log(formValues);
-    const payload = {...formValues, event_id: eventId}; // Add eventId to the payload
-    const joinEventResp = await axios.post('http://localhost:4000/api/events/join', payload, {
+    const payload = { ...formValues, event_id: eventId }; // Add eventId to the payload
+    const joinEventResp = await axios.post(
+      'http://localhost:4000/api/events/join',
+      payload,
+      {
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
-    });
+      },
+    );
     console.log('joinEventResp:', joinEventResp.data);
-    
+
     toggleModal(); // Close the modal after submission
     // You can now use formValues object which contains all input values
   };
@@ -89,7 +93,6 @@ const JoinEventModal: React.FC<ModalProps> = ({
               <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-
                     <div className="mt-2">
                       <form
                         className="space-y-1"
@@ -101,7 +104,7 @@ const JoinEventModal: React.FC<ModalProps> = ({
                             htmlFor="name"
                             className="block text-sm font-medium text-gray-900"
                           >
-                            Full Name: 
+                            Full Name:
                           </label>
                           <input
                             type="text"

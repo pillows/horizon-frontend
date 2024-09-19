@@ -1,29 +1,29 @@
-'use client'
+'use client';
 
-import clsx from 'clsx';
-import { useState, useEffect } from 'react'
-import { Event } from '@/components/Event'
-import Modal from '@/components/Modal/Modal';
 import axios from 'axios';
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+
+import { Event } from '@/components/Event';
+import Modal from '@/components/Modal/Modal';
 
 type Event = {
   id: number | null | undefined;
-  name: string
-  available_spots: number
-  start_date: string
+  name: string;
+  available_spots: number;
+  start_date: string;
   description: string;
-}
+};
 
 interface EventData {
   name: string;
   description: string;
   availableSpots: number;
-  startDate: string
+  startDate: string;
 }
 
-
 export default function Home() {
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<Event[]>([]);
   const [eventData, setEventData] = useState<EventData>({
     name: '',
     description: '',
@@ -47,14 +47,17 @@ export default function Home() {
     void fetchEvents(); // Ensure the promise is handled correctly
   }, []); // Empty dependency array ensures this runs only once
 
-
   const addEvent = async (newEvent: Omit<Event, 'id'>) => {
     try {
-      const addEventResponse = await axios.post<Event>('/api/events', newEvent, {
-        headers: {
-          'Content-Type': 'application/json',
+      const addEventResponse = await axios.post<Event>(
+        '/api/events',
+        newEvent,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const addedEvent: Event = addEventResponse.data;
       setEvents((prevEvents) => [...prevEvents, addedEvent]);
     } catch (error) {
@@ -63,10 +66,9 @@ export default function Home() {
   };
 
   const onClose = () => setIsModalOpen(false);
-  
 
   const handleFormSubmit = async (data: EventData) => {
-    setIsModalOpen(false);  // Close the modal after submission
+    setIsModalOpen(false); // Close the modal after submission
     // Here you can also send the data to an API or perform any other action
     const eventName = data.name || '';
     const eventDescription = data.description || '';
@@ -80,12 +82,9 @@ export default function Home() {
     });
   };
 
-
   return (
     <div className="py-20">
-      
       <div className="mx-auto max-w-7xl px-6 sm:px-12">
-      
         <div
           className={clsx(
             'flex',
@@ -99,21 +98,25 @@ export default function Home() {
         >
           <Modal isOpen={false} onClose={onClose} onSubmit={handleFormSubmit} />
           <div>
-            {loading ? <h2 className="text-xl font-semibold mt-4">Events</h2> : <div className=" mt-5 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow">'Loading...'</div>}
+            {loading ? (
+              <h2 className="mt-4 text-xl font-semibold">Events</h2>
+            ) : (
+              <div className="mt-5 block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow">
+                'Loading...'
+              </div>
+            )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-              
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {events.map((event) => (
-                  <Event
-                    key={event.id}
-                    eventId={event.id?.toString() ?? ''}
-                    description={event.description}
-                    startDate={event.start_date}
-                    name={event.name}
-                    availableSpots={event.available_spots}
-                  />
-                )
-              )}
+                <Event
+                  key={event.id}
+                  eventId={event.id?.toString() ?? ''}
+                  description={event.description}
+                  startDate={event.start_date}
+                  name={event.name}
+                  availableSpots={event.available_spots}
+                />
+              ))}
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import axios from 'axios';
 
 type Event = {
@@ -11,11 +12,13 @@ type Event = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Event[] | Event | { message: string }>
+  res: NextApiResponse<Event[] | Event | { message: string }>,
 ) {
   if (req.method === 'GET') {
     try {
-      const eventsResp = await axios.get<Event[]>(`${process.env.NEXT_BACKEND_URL}/api/events`);
+      const eventsResp = await axios.get<Event[]>(
+        `${process.env.NEXT_BACKEND_URL}/api/events`,
+      );
       const events: Event[] = eventsResp.data;
       res.status(200).json(events);
     } catch (error) {
@@ -24,11 +27,15 @@ export default async function handler(
     }
   } else if (req.method === 'POST') {
     try {
-      const createdEventResp = await axios.post<Event>(`${process.env.NEXT_BACKEND_URL}/api/events`, req.body, {
-        headers: {
-          'Content-Type': 'application/json',
+      const createdEventResp = await axios.post<Event>(
+        `${process.env.NEXT_BACKEND_URL}/api/events`,
+        req.body,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const createdEvent: Event = createdEventResp.data;
       res.status(201).json(createdEvent);
     } catch (error) {

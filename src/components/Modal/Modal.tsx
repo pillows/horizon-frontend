@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
+
+import React, { useEffect, useState } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,11 +15,7 @@ interface EventData {
   startDate: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit
-}) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
 
   useEffect(() => {
@@ -34,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
     onSubmit(formValues);
