@@ -107,16 +107,28 @@ export default function Home() {
             )}
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {events.map((event) => (
-                <Event
+              {events.map((event) => {
+                const currentDate = new Date();
+                const eventDate = new Date(event.start_date);
+                
+                // Set both dates to the start of their respective days
+                currentDate.setHours(0, 0, 0, 0);
+                eventDate.setHours(0, 0, 0, 0);
+                
+                const isPastEvent = eventDate < currentDate;
+                
+                // Leaving this code here in the event that we want to skip past events
+                // if (isPastEvent) return null;
+                return (<Event
                   key={event.id}
                   eventId={event.id?.toString() ?? ''}
                   description={event.description}
                   startDate={event.start_date}
                   name={event.name}
-                  availableSpots={event.available_spots}
-                />
-              ))}
+                  initialAvailableSpots={event.available_spots}
+                />)
+              }
+              )}
             </div>
           </div>
         </div>

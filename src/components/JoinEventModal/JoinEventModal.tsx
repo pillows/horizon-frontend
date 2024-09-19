@@ -1,13 +1,12 @@
 import axios from 'axios';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 
 interface ModalProps {
   eventId: string | null | undefined;
   isOpen: boolean;
   disabled: boolean;
   onClose: () => void;
-  onSubmit: (eventData: EventData) => void;
-  onChange: (eventData: EventData) => void;
+  onJoinEvent: (newAvailableSpots: number) => void;
 }
 
 interface EventData {
@@ -21,8 +20,11 @@ const JoinEventModal: React.FC<ModalProps> = ({
   eventId,
   disabled,
   isOpen,
+  onClose,
+  onJoinEvent,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsModalOpen(isOpen);
@@ -31,19 +33,46 @@ const JoinEventModal: React.FC<ModalProps> = ({
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
-      //   onClose();
+      onClose();
     }
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setIsModalOpen(false);
+      onClose();
+    }
+  };
+
+  const handleEscapePress = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsModalOpen(false);
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapePress);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapePress);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapePress);
+    };
+  }, [isModalOpen]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
-    onSubmit(formValues);
-    console.log(formValues);
     const payload = { ...formValues, event_id: eventId }; // Add eventId to the payload
-    const joinEventResp = await axios.post(
+    const response = await axios.post(
       'http://localhost:4000/api/events/join',
       payload,
       {
@@ -52,23 +81,15 @@ const JoinEventModal: React.FC<ModalProps> = ({
         },
       },
     );
-    console.log('joinEventResp:', joinEventResp.data);
 
+    const newAvailableSpots = response.data.availableSpots; // Assuming the response contains the updated available spots
+    console.log('New available spots:', response.data);
+    onJoinEvent(parseInt(newAvailableSpots) - 1);
     toggleModal(); // Close the modal after submission
-    // You can now use formValues object which contains all input values
   };
 
   return (
     <>
-      <button
-        onClick={toggleModal}
-        disabled={disabled}
-        className={`${disabled && 'disabled:opacity-50'} mt-3 text-blue-600`}
-        type="button"
-      >
-        {disabled ? 'No spots remaining' : 'Join Event'}
-      </button>
-
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto"
@@ -87,7 +108,10 @@ const JoinEventModal: React.FC<ModalProps> = ({
             >
               &#8203;
             </span>
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+            <div
+              ref={modalRef}
+              className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+            >
               <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">

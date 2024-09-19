@@ -1,6 +1,5 @@
 import type { FormEvent } from 'react';
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,6 +16,7 @@ interface EventData {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsModalOpen(isOpen);
@@ -29,15 +29,42 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
     }
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setIsModalOpen(false);
+      onClose();
+    }
+  };
+
+  const handleEscapePress = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsModalOpen(false);
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapePress);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapePress);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapePress);
+    };
+  }, [isModalOpen]);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
     onSubmit(formValues);
-    // console.log(formValues);
     toggleModal(); // Close the modal after submission
-    // You can now use formValues object which contains all input values
   };
 
   return (
@@ -68,7 +95,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
             >
               &#8203;
             </span>
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+            <div
+              ref={modalRef}
+              className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+            >
               <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
