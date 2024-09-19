@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { JoinEventModal } from '../JoinEventModal';
 
 type EventProps = {

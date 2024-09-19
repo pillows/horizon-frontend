@@ -110,25 +110,26 @@ export default function Home() {
               {events.map((event) => {
                 const currentDate = new Date();
                 const eventDate = new Date(event.start_date);
-                
+
                 // Set both dates to the start of their respective days
                 currentDate.setHours(0, 0, 0, 0);
                 eventDate.setHours(0, 0, 0, 0);
-                
+
                 const isPastEvent = eventDate < currentDate;
-                
+
                 // Leaving this code here in the event that we want to skip past events
                 // if (isPastEvent) return null;
-                return (<Event
-                  key={event.id}
-                  eventId={event.id?.toString() ?? ''}
-                  description={event.description}
-                  startDate={event.start_date}
-                  name={event.name}
-                  initialAvailableSpots={event.available_spots}
-                />)
-              }
-              )}
+                return (
+                  <Event
+                    key={event.id}
+                    eventId={event.id?.toString() ?? ''}
+                    description={event.description}
+                    startDate={event.start_date}
+                    name={event.name}
+                    initialAvailableSpots={event.available_spots}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
