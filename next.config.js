@@ -33,7 +33,7 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   poweredByHeader: false,
 
   headers: async () => [
