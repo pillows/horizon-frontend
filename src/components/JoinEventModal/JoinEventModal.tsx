@@ -31,7 +31,7 @@ const JoinEventModal: React.FC<ModalProps> = ({
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
-    //   onClose();
+      //   onClose();
     }
   };
 
