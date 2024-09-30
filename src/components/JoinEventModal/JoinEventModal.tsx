@@ -78,11 +78,9 @@ const JoinEventModal: React.FC<ModalProps> = ({
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData) as unknown as EventData;
     const payload = { ...formValues, event_id: eventId };
-    console.log('url1', process.env.NEXT_PUBLIC_BACKEND_URL);
-    console.log('url', `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/events/join`);
     try {
       await axios.post<JoinEventResponse>(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/events/join`,
+        `/api/events/join`,
         payload,
         {
           headers: {

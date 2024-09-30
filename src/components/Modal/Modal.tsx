@@ -16,11 +16,16 @@ interface EventData {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
+  const [currentDate, setCurrentDate] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsModalOpen(isOpen);
   }, [isOpen]);
+
+  const handleDateChange = (event: { target: { value: any; }; }) => {
+    setCurrentDate(event.target.value);
+  };
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
