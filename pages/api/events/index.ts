@@ -17,7 +17,7 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const eventsResp = await axios.get<Event[]>(
-        `${process.env.NEXT_BACKEND_URL}/api/events`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/events`,
       );
       const events: Event[] = eventsResp.data;
       res.status(200).json(events);
@@ -28,7 +28,7 @@ export default async function handler(
   } else if (req.method === 'POST') {
     try {
       const createdEventResp = await axios.post<Event>(
-        `${process.env.NEXT_BACKEND_URL}/api/events`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/events`,
         req.body,
         {
           headers: {

@@ -110,7 +110,7 @@ export default function Home() {
                 const isPastEvent = eventDate < currentDate;
 
                 // Leaving this code here in the event that we want to skip past events
-                // if (isPastEvent) return null;
+                if (isPastEvent) return null;
                 return (
                   <Event
                     key={event.id}

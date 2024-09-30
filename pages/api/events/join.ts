@@ -15,7 +15,7 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const joinEventResp = await axios.post<JoinEvent>(
-        'http://localhost:4000/api/events/join',
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/events/join`,
         req.body,
         {
           headers: {

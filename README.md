@@ -28,7 +28,7 @@
 
    - Ensure the `.env.local` file in the root directory of the project contains the following line:
      ```properties
-     NEXT_BACKEND_URL=http://ec2-54-242-134-147.compute-1.amazonaws.com:4000
+     NEXT_PUBLIC_BACKEND_URL=http://ec2-54-242-134-147.compute-1.amazonaws.com:4000
      ```
 
 4. **Run the development server:**
