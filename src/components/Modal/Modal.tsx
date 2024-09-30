@@ -23,10 +23,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onSubmit }) => {
     setIsModalOpen(isOpen);
   }, [isOpen]);
 
-  const handleDateChange = (event: { target: { value: any; }; }) => {
-    setCurrentDate(event.target.value);
-  };
-
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
